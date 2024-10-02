@@ -123,7 +123,7 @@ class ImageEmbeddingExtractor(IndexifyFunction):
         for page in document.pages:
             for fragment in page.page_fragments:
                 if fragment.fragment_type == PageFragmentType.FIGURE:
-                    image = Image.fromarray(fragment.content.image)
+                    image = fragment.content.image
                     img_emb = self.model.encode(image)
                     embedding.append(
                         ImageWithEmbedding(

@@ -192,9 +192,12 @@ class RemoteClient(IndexifyClient):
         for item in namespaces_dict:
             namespaces.append(item["name"])
         return namespaces
+    
+    def set_namespace(self, namespace: str):
+        self.namespace = namespace    
 
     def create_namespace(self, namespace: str):
-        self._post("namespaces", json={"namespace": namespace})
+        self._post("namespaces", json={"name": namespace})
 
     def logs(
         self, invocation_id: str, cg_name: str, fn_name: str, file: str

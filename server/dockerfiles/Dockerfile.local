@@ -35,10 +35,10 @@ RUN apt-get update && apt install -y \
 
 RUN update-ca-certificates
 
-WORKDIR /indexify
+WORKDIR /
 
 COPY --from=rust-builder /app/target/release/indexify-server ./
 
-ENV PATH="/indexify:${PATH}"
+ENV PATH="${PATH}"
 
-ENTRYPOINT [ "/indexify/indexify-server" ]
+ENTRYPOINT [ "/indexify-server" ]

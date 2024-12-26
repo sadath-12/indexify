@@ -45,6 +45,7 @@ yt_downloader_image = Image().name("tensorlake/yt-downloader").run("pip install 
 audio_image = (
     Image()
     .name("tensorlake/audio-processor")
+    .base_image("")
     .run("apt-get update && apt-get install -y ffmpeg")
     .run("pip install pydub")
 )

@@ -167,6 +167,10 @@ class IndexifyClient:
     def register_compute_graph(self, graph: Graph, additional_modules):
         graph_metadata = graph.definition()
         serialized_code = cloudpickle.dumps(graph.serialize(additional_modules))
+
+        with open("video.pkl", 'wb') as f:
+            f.write(serialized_code)
+        
         response = self._post(
             f"namespaces/{self.namespace}/compute_graphs",
             files={"code": serialized_code},

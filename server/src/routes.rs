@@ -25,7 +25,6 @@ use blob_store::PutResult;
 use data_model::ExecutorId;
 use futures::StreamExt;
 use hyper::StatusCode;
-use indexify_ui::Assets as UiAssets;
 use indexify_utils::GuardStreamExt;
 use metrics::api_io_stats;
 use nanoid::nanoid;
@@ -222,10 +221,7 @@ pub fn create_routes(route_state: RouteState) -> Router {
                     info_span!("request", method, uri, matched_path)
                 })
         )
-        // No tracing starting here.
-        .route("/ui", get(ui_index_handler))
-        .route("/ui/*rest", get(ui_handler))
-        .layer(cors)
+
         .route("/metrics/service",get(service_metrics).with_state(route_state.clone()))
         .layer(axum_metrics)
         .layer(DefaultBodyLimit::disable())
@@ -235,26 +231,7 @@ async fn index() -> impl IntoResponse {
     Html(include_str!("./index.html"))
 }
 
-#[axum::debug_handler]
-async fn ui_index_handler() -> impl IntoResponse {
-    let content = UiAssets::get("index.html").unwrap();
-    (
-        [(hyper::header::CONTENT_TYPE, content.metadata.mimetype())],
-        content.data,
-    )
-        .into_response()
-}
 
-#[axum::debug_handler]
-async fn ui_handler(Path(url): Path<String>) -> impl IntoResponse {
-    let content = UiAssets::get(url.trim_start_matches('/'))
-        .unwrap_or_else(|| UiAssets::get("index.html").unwrap());
-    (
-        [(hyper::header::CONTENT_TYPE, content.metadata.mimetype())],
-        content.data,
-    )
-        .into_response()
-}
 
 /// Namespace router with namespace specific layers.
 pub fn namespace_routes(route_state: RouteState) -> Router {
